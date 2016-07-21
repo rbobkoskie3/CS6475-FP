@@ -191,15 +191,21 @@ def CreateMask(img, template, idx):
         else:
             top_left = max_loc
 
-        # Draw rectangle around Car
-        bottom_right = (top_left[0] + w, top_left[1] + h)
-        cv2.rectangle(img, top_left, bottom_right,(200,200,200), 2)
+        # FOR VERIFICATION - Draw rectangle around Car
+        #bottom_right = (top_left[0] + w, top_left[1] + h)
+        #cv2.rectangle(img, top_left, bottom_right,(200,200,200), 2)
         #cv2.imwrite(str(idx).zfill(4)+'TEST.jpg', img)  #FOR VERIFYING DETECTED SHAPE
 
         # Create mask
         mask[top_left[1]:top_left[1] + h, top_left[0]:top_left[0] + w] = 255.0
 
-    return mask, top_left
+        # Create Image to Blend
+        bld_img = img[top_left[1]:top_left[1] + h, top_left[0]:top_left[0] + w]
+        #bld_img = img[top_left[1]:top_left[1] + h - 10, top_left[0]:top_left[0] + w - 10]  #FOR TESTING
+        #cv2.imshow('IMAGE', bld_img)
+        #cv2.waitKey()
+
+    return mask, top_left, bld_img
 
 
 def main():
@@ -215,7 +221,7 @@ def main():
     #template = cv2.imread('template.jpg',0) # SINGLE CHANNEL
     template = cv2.imread('template.jpg')
     #print 'TEMPLATE SHAPE', template.shape
-    #cv2.imshow('G IMAGE', template)
+    #cv2.imshow('IMAGE', template)
     #cv2.waitKey()
 
     # Create a mask from a moving object
@@ -225,7 +231,7 @@ def main():
         #img = cv2.imread('street.jpg')  #FOR STATIC SCENE
         blend_img = cv2.imread(bld_name)
         #img = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
-        mask, top_left = CreateMask(img, template, idx)
+        mask, top_left, bld_img = CreateMask(img, template, idx)
 
         #print outdir+str(idx).zfill(4)+'.jpg'
         cv2.imwrite(mypath_msk+str(idx).zfill(4)+'.jpg', mask) #FOR VERIFICATION
@@ -233,17 +239,25 @@ def main():
         bld_mask = np.zeros(shape=img.shape, dtype=np.float64)
         resize_img = ResizeImage(blend_img, template.shape)
         if top_left != (0, 0):
+
+            ##################################
             #print bld_mask.shape, resize_img.shape, top_left[1], top_left[0]
-            bld_mask[top_left[1]:top_left[1] + resize_img.shape[0], top_left[0]:top_left[0] + resize_img.shape[1]] = resize_img
-            #bld_mask[top_left[1]:top_left[1] + resize_img.shape[0], top_left[0]:top_left[0] + resize_img.shape[1]] = template  #USE FOR FINAL BLEND
+            #bld_mask[top_left[1]:top_left[1] + resize_img.shape[0], top_left[0]:top_left[0] + resize_img.shape[1]] = resize_img
+            bld_mask[top_left[1]:top_left[1] + resize_img.shape[0], top_left[0]:top_left[0] + resize_img.shape[1]] = bld_img  #USE FOR FINAL BLEND
+            #bld_mask[top_left[1]:top_left[1] + resize_img.shape[0] - 10, top_left[0]:top_left[0] + resize_img.shape[1] - 10] = bld_img  #USE FOR FINAL BLEND - TESTING
+            ##################################
+
         #cv2.imwrite(outdir+str(idx).zfill(4)+'.jpg', bld_mask) #FOR VERIFICATION
         #print bld_mask.shape, mask.shape, img.shape
         #cv2.imshow('G IMAGE', blendImage)
         #cv2.waitKey()
         #print outdir+str(idx).zfill(4)+'.jpg'
 
-        final_Image = BlendImagePair(img, bld_mask, mask)
-        #final_Image = BlendImagePair(blend_img, bld_mask, mask)  #USE FOR FINAL BLEND
+        ##################################
+        #final_Image = BlendImagePair(img, bld_mask, mask)
+        final_Image = BlendImagePair(blend_img, bld_mask, mask)  #USE FOR FINAL BLEND
+        ##################################
+
         cv2.imwrite(outdir+str(idx).zfill(4)+'.jpg', final_Image)
 
 if __name__ == '__main__':
