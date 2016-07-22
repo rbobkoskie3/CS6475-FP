@@ -155,7 +155,7 @@ def BlendImagePair(img, car, mask):
     return outimg
 
 
-def CreateMask(img, template):
+def CreateMask(img, template, idx):
     '''
     This function uses Template Matching Functions from opencv to create a mack for each frame:
     http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_template_matching/py_template_matching.html
@@ -188,7 +188,7 @@ def CreateMask(img, template):
     # Draw rectangle around Car
     #bottom_right = (top_left[0] + w, top_left[1] + h)
     #cv2.rectangle(img, top_left, bottom_right, 255, 2)
-    #cv2.imwrite('TEST.jpg', img)
+    #cv2.imwrite(str(idx)+'TEST.jpg', img)
 
     # Create mask of car
     mask = np.zeros(shape=img.shape, dtype=np.float64)
@@ -219,7 +219,7 @@ def CreateMask(img, template):
     img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
     #img = img[y:y+h,x:x+w]
     print 'CROP SIZE', img.shape
-    cv2.imwrite('TEST.jpg', img)
+    cv2.imwrite(str(idx)+'TEST.jpg', img)
 
     ############################
     # RESIZE IMAGE
@@ -280,7 +280,7 @@ def main():
         for idx, img_name in enumerate(files):
             img = cv2.imread(img_name)
             #img = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
-            mask = CreateMask(img, template)
+            mask = CreateMask(img, template, idx)
             #print outdir+str(idx).zfill(4)+'.jpg'
             cv2.imwrite(outdir+str(idx).zfill(4)+'.jpg', mask)
 
