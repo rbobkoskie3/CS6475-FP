@@ -197,7 +197,7 @@ def CreateMask(img, template, idx):
         #cv2.imwrite(str(idx).zfill(4)+'TEST.jpg', img)  #FOR VERIFYING DETECTED SHAPE
 
         # Create mask
-        OFFSET = 20
+        OFFSET = 5
         mask[top_left[1] + 2:top_left[1] + h - OFFSET, top_left[0] + OFFSET:top_left[0] + w - 2] = 255.0  #MAKE MASK AREA SLIGHTLY SMALLER FOR BETTER BLEND
         #mask[top_left[1] + OFFSET:top_left[1] + h - OFFSET, top_left[0] + OFFSET:top_left[0] + w - OFFSET] = 255.0  #MAKE MASK AREA SLIGHTLY SMALLER FOR BETTER BLEND
         #mask[top_left[1]:top_left[1] + h, top_left[0]:top_left[0] + w] = 255.0
