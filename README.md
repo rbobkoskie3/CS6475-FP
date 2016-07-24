@@ -7,4 +7,10 @@ AUTO_SIZE.py is used to for feature matching based on a template. The program wi
 
 RESIZE.py is used to crop and size images. The sizing must be known, and entered as vars into the program.
 
+#########################################
+# The files below were developed, but not used for the project. They are included for completeness
+#########################################
+
 MATCHER.py was an experiment, and was not used for this project. It was an attempt to use ORB and SIFT for feature detection. However, I was not able to get this to produce the desired results. Template matching was more effective for this project.
+
+READ_VIDEO.py was an experiment to capture and save video. I was not able to consistently get it to work in a windows env.
